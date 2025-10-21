@@ -1,0 +1,111 @@
+﻿@model IEnumerable<ProgrammingPOE.Models.Claim>
+
+@{
+    ViewData["Title"] = "Claims Approval Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-tasks me-2"></i>@ViewData["Title"]
+        </h2>
+        <div class="badge bg-warning text-dark p-2">
+            <i class="fas fa-clock me-1"></i>@Model.Count(c => c.Status == ProgrammingPOE.Models.ClaimStatus.Submitted) Pending Claims
+        </div>
+    </div>
+
+    @if (!Model.Any(c => c.Status == ProgrammingPOE.Models.ClaimStatus.Submitted))
+    {
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle me-2"></i>No pending claims found</h5>
+            <p class="mb-0">All claims have been processed. Check back later for new submissions.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var claim in Model.Where(c => c.Status == ProgrammingPOE.Models.ClaimStatus.Submitted))
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-file-invoice me-1"></i>Claim #@claim.Id
+                            </h6>
+                            <span class="badge bg-white text-warning">@claim.Status</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <strong>Lecturer:</strong><br>
+                                    <span class="text-primary">@claim.Lecturer?.FullName</span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Submitted:</strong><br>
+                                    <span>@claim.SubmissionDate.ToString("dd MMM yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-4 text-center">
+                                    <small class="text-muted">Hours</small>
+                                    <div class="h5 text-primary">@claim.HoursWorked</div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <small class="text-muted">Rate</small>
+                                    <div class="h5 text-success">R@(claim.HourlyRate)</div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <small class="text-muted">Total</small>
+                                    <div class="h5 text-dark">R@(claim.TotalAmount)</div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(claim.AdditionalNotes))
+                            {
+                                <div class="mb-3">
+                                    <strong>Notes:</strong>
+                                    <p class="mb-0 text-muted">@claim.AdditionalNotes</p>
+                                </div>
+                            }
+
+                            @if (claim.SupportingDocuments.Any())
+                            {
+                                <div class="mb-3">
+                                    <strong>Documents:</strong>
+                                    <ul class="list-unstyled mt-1">
+                                        @foreach (var doc in claim.SupportingDocuments)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Download", "Documents", new { id = doc.Id })"
+                                                   class="text-decoration-none">
+                                                    <i class="fas fa-file me-1"></i>@doc.FileName
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <form asp-action="Approve" asp-route-id="@claim.Id" method="post" class="me-md-2">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                </form>
+                                <form asp-action="Reject" asp-route-id="@claim.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
