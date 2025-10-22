@@ -20,4 +20,10 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Integration\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
