@@ -1,58 +1,64 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProgrammingPOE.Models;
-using ProgrammingPOE.Data;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace ProgrammingPOE.Controllers
 {
-    [Authorize]
     public class DocumentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
-        public DocumentsController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public DocumentsController(IWebHostEnvironment environment)
         {
-            _context = context;
             _environment = environment;
         }
 
-        public async Task<IActionResult> Download(int id)
+        public IActionResult Download(string fileName)
         {
-            var document = await _context.SupportingDocuments
-                .Include(d => d.Claim)
-                .FirstOrDefaultAsync(d => d.Id == id);
-
-            if (document == null)
+            if (string.IsNullOrEmpty(fileName))
             {
-                return NotFound();
+                return NotFound("File name is required.");
             }
 
-            // Check if user has permission to access this document
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (document.Claim.LecturerId != userId &&
-                !User.IsInRole("Coordinator") &&
-                !User.IsInRole("Manager"))
+            // Security: Prevent directory traversal attacks
+            var safeFileName = Path.GetFileName(fileName);
+            if (string.IsNullOrEmpty(safeFileName))
             {
-                return Forbid();
+                return NotFound("Invalid file name.");
             }
 
-            var filePath = Path.Combine(_environment.WebRootPath, "uploads", document.FilePath);
+            var filePath = Path.Combine(_environment.WebRootPath, "uploads", safeFileName);
+
             if (!System.IO.File.Exists(filePath))
             {
-                return NotFound();
+                return NotFound($"File not found: {safeFileName}");
             }
 
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(filePath, FileMode.Open))
+            // Determine content type based on file extension
+            var contentType = GetContentType(safeFileName);
+            var originalFileName = safeFileName.Contains("_")
+                ? safeFileName.Substring(safeFileName.IndexOf("_") + 1)
+                : safeFileName;
+
+            // Return the file for download
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, contentType, originalFileName);
+        }
+
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
             {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-
-            return File(memory, document.ContentType, document.FileName);
+                ".pdf" => "application/pdf",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".doc" => "application/msword",
+                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ".xls" => "application/vnd.ms-excel",
+                ".txt" => "text/plain",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                _ => "application/octet-stream"
+            };
         }
     }
 }

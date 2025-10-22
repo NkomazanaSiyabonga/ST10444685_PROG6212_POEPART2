@@ -9,6 +9,17 @@ namespace ProgrammingPOE.Controllers
             return View();
         }
 
+        [CustomAuthorization]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

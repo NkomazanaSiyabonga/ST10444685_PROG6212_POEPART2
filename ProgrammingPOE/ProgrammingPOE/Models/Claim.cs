@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProgrammingPOE.Models
 {
@@ -13,11 +12,14 @@ namespace ProgrammingPOE.Models
 
     public class Claim
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]
-        public string LecturerId { get; set; }
+        public string UserId { get; set; }
+
+        [Required]
+        [Display(Name = "Lecturer Name")]
+        public string LecturerName { get; set; }
 
         [Required]
         [Display(Name = "Hours Worked")]
@@ -34,15 +36,24 @@ namespace ProgrammingPOE.Models
 
         [Display(Name = "Additional Notes")]
         [StringLength(500)]
-        public string AdditionalNotes { get; set; }
+        public string AdditionalNotes { get; set; } // REMOVED [Required]
 
         public ClaimStatus Status { get; set; } = ClaimStatus.Submitted;
 
         [Display(Name = "Submission Date")]
-        public DateTime SubmissionDate { get; set; } = DateTime.Now;
+        public DateTime SubmissionDate { get; set; }
 
-        // Navigation properties
-        public virtual ApplicationUser Lecturer { get; set; }
         public virtual ICollection<SupportingDocument> SupportingDocuments { get; set; } = new List<SupportingDocument>();
+    }
+
+    public class SupportingDocument
+    {
+        public int Id { get; set; }
+        public int ClaimId { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+        public string ContentType { get; set; }
+        public long FileSize { get; set; }
+        public DateTime UploadDate { get; set; }
     }
 }

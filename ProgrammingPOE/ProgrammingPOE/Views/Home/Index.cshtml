@@ -1,111 +1,105 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Claims Management System";
 }
 
-<div class="hero-section bg-primary text-white py-5 mb-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-3">Contract Monthly Claim System</h1>
-                <p class="lead mb-4">Streamlining the process of submitting and approving monthly claims for Independent Contractor lecturers</p>
-                <a asp-controller="Claims" asp-action="Create" class="btn btn-light btn-lg me-3">
-                    <i class="fas fa-paper-plane me-2"></i>Submit Your First Claim
-                </a>
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login to Account
-                </a>
+<div class="text-center hero-section">
+    <div class="hero-background">
+        <h1 class="display-4 mb-4 text-white">Welcome to Claims Management System</h1>
+        <p class="lead text-white mb-5">Streamline your academic claims process with our secure platform</p>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="card role-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="role-icon mb-3">
+                            <i class="fas fa-chalkboard-teacher fa-3x text-primary"></i>
+                        </div>
+                        <h4 class="card-title">👨‍🏫 Lecturer</h4>
+                        <p class="card-text">Submit claims, upload documents, and track your claim status throughout the approval process.</p>
+                        <a href="@Url.Action("Login", "Account", new { role = "Lecturer" })" class="btn btn-primary btn-lg w-100">
+                            Enter as Lecturer
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 d-none d-lg-block">
-                <div class="text-center">
-                    <i class="fas fa-file-invoice-dollar display-1 opacity-75"></i>
+
+            <div class="col-md-4 mb-4">
+                <div class="card role-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="role-icon mb-3">
+                            <i class="fas fa-user-tie fa-3x text-warning"></i>
+                        </div>
+                        <h4 class="card-title">👔 Coordinator</h4>
+                        <p class="card-text">Verify and review claims submitted by lecturers in your programme.</p>
+                        <a href="@Url.Action("Login", "Account", new { role = "Coordinator" })" class="btn btn-warning btn-lg w-100">
+                            Enter as Coordinator
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card role-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="role-icon mb-3">
+                            <i class="fas fa-briefcase fa-3x text-success"></i>
+                        </div>
+                        <h4 class="card-title">💼 Manager</h4>
+                        <p class="card-text">Approve or reject verified claims and manage the overall claims process.</p>
+                        <a href="@Url.Action("Login", "Account", new { role = "Manager" })" class="btn btn-success btn-lg w-100">
+                            Enter as Manager
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h5>New to the system?</h5>
+                        <p class="mb-3">Register for an account to get started</p>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-outline-primary">Create Account</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h2 class="mb-4">How It Works</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="bg-primary rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                <i class="fas fa-plus-circle fa-2x text-white"></i>
-                            </div>
-                            <h4 class="card-title mt-4">Submit Claims</h4>
-                            <p class="card-text">Easily submit your monthly claims with all necessary details in a simple, intuitive interface.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="bg-info rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                <i class="fas fa-history fa-2x text-white"></i>
-                            </div>
-                            <h4 class="card-title mt-4">Track Status</h4>
-                            <p class="card-text">Monitor the status of your claims throughout the approval process with real-time updates.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="bg-success rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                <i class="fas fa-file-upload fa-2x text-white"></i>
-                            </div>
-                            <h4 class="card-title mt-4">Upload Documents</h4>
-                            <p class="card-text">Attach supporting documents to validate your claims with our secure upload system.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 0;
+    }
 
-    <div class="row align-items-center mb-5">
-        <div class="col-lg-6">
-            <h2 class="mb-4">Fast & Efficient Claim Processing</h2>
-            <p class="lead">Our system reduces processing time by up to 70% compared to traditional paper-based methods.</p>
-            <ul class="list-unstyled">
-                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Submit claims in minutes, not hours</li>
-                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Real-time status tracking</li>
-                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Secure document uploads</li>
-                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Mobile-friendly interface</li>
-            </ul>
-        </div>
-        <div class="col-lg-6">
-            <div class="card bg-light border-0">
-                <div class="card-body p-4">
-                    <h4 class="card-title mb-3">Ready to get started?</h4>
-                    <p class="card-text">Join hundreds of lecturers who are already using our system to streamline their claim process.</p>
-                    <div class="d-grid gap-2">
-                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Create Account
-                        </a>
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    .hero-background {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 100px 20px 80px 20px;
+    }
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card bg-dark text-white">
-                <div class="card-body p-5 text-center">
-                    <h2 class="card-title mb-3">Have Questions?</h2>
-                    <p class="card-text lead mb-4">Our support team is here to help you with any questions about the claim process.</p>
-                    <a href="#" class="btn btn-light btn-lg">
-                        <i class="fas fa-question-circle me-2"></i>Get Help
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    .role-card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .role-icon {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
